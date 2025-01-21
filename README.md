@@ -7,8 +7,6 @@ Forms for obsidian
 Use obsidian to link one of your vault's folder and than use [https://formsidian.com/](formsidian.com) to manage it.
 
 
-## Steps to Build Amazing Forms in Obsidian
-
 ## 1. Form Creation
 - Choose an Obsidian folder as the home directory for the form.
 
