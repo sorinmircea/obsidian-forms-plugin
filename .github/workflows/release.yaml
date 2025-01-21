@@ -26,7 +26,7 @@ jobs:
             - name: Prepare release files
               run: |
                   mkdir -p release
-                  cp main.js manifest.json styles.css release/
+                  cp main.js manifest.json release/
 
             - name: Debug release files
               run: |
@@ -41,4 +41,4 @@ jobs:
                   gh release create "$tag" \
                       --title="$tag" \
                       --draft \
-                      release/main.js release/manifest.json release/styles.css
+                      release/main.js release/manifest.json
