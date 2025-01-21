@@ -4,7 +4,7 @@ Forms for obsidian
 
 ## How does it work
 
-Use obsidian to link one of your vault's folder and than use [formsidian.com](https://formsidian.com/) to manage it.
+Link a folder from your Obsidian vault to [Formsidian.com](https://formsidian.com) to easily create, edit, and manage forms. Obsidian automatically syncs with Formsidian, so all your filled forms stay up to date in one place.
 
 
 ### 1. Form Creation

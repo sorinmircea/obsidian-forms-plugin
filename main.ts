@@ -12,7 +12,7 @@ export default class Formsidian extends Plugin {
 		this.apiManager = new APIManager(this);
 
 		// Add ribbon icon
-		this.addRibbonIcon("book-copy", "Formsidian dashboard", (evt: MouseEvent) => {
+		this.addRibbonIcon("book-copy", "Formsidian dashboard", () => {
 			new FormManagementModal(this.app, this).open();
 		});
 

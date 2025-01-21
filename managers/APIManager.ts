@@ -1,5 +1,5 @@
 import { FORMS_POST_ENDPOINT } from "../constants";
-import { Notice, requestUrl } from "obsidian";
+import { Notice, requestUrl, Plugin } from "obsidian";
 
 interface APIManagerCreateFormRes {
 	public_url: string;
@@ -22,10 +22,10 @@ interface ResponseItem {
 }
 
 export default class APIManager {
-	private plugin: any;
+	private plugin: Plugin;
 	private data: Record<string, APIManagerCreateFormRes>;
 
-	constructor(plugin: any) {
+	constructor(plugin: Plugin) {
 		this.plugin = plugin;
 	}
 
@@ -98,11 +98,6 @@ export default class APIManager {
 			.map((v) => `${v.label}: "${v.content}"`)
 			.join("\n");
 		const submittedAt = `submitted_at: "${response.submitted_at}"`;
-		const submittedBy = `submitted_by: ${
-			response.submitted_by !== null
-				? `"${response.submitted_by}"`
-				: "null"
-		}`;
 
 		// Prepare the note content
 		const noteContent = `---

@@ -1,4 +1,4 @@
-import { App, Modal, Notice, Plugin, Setting, FileManager } from "obsidian";
+import { App, Modal, Notice, Plugin, Setting } from "obsidian";
 import FormData from "types/FormData";
 import ContentManager from "managers/ContentManager";
 import APIManager from "managers/APIManager";
@@ -36,7 +36,7 @@ export default class FormManagementModal extends Modal {
 	async loadForms() {
 		const savedForms = (await this.plugin.loadData()) || {};
 		for (const [key, value] of Object.entries(savedForms)) {
-			let formValue = value as FormData;
+			const formValue = value as FormData;
 			this.forms.set(
 				key,
 				new FormData(
@@ -82,7 +82,7 @@ export default class FormManagementModal extends Modal {
 					dropdown.addOption(folder, folder);
 				});
 				dropdown
-					.setValue(this.currentFolder) // Prepopulate with the current folder
+					.setValue(this.currentFolder) // Pre-populate with the current folder
 					.onChange((value) => {
 						this.currentFolder = value;
 					});
@@ -96,7 +96,7 @@ export default class FormManagementModal extends Modal {
 							new Notice(`Linking folder...`);
 
 							// Call Server
-							let serverResponse =
+							const serverResponse =
 								await this.apiManager.createForm(
 									this.app.vault.getName(),
 									this.currentFolder
@@ -144,7 +144,7 @@ export default class FormManagementModal extends Modal {
 						.setCta()
 						.setTooltip("Configure form questions")
 						.onClick(() => {
-							new Notice(`Configuring sync for ${folder}...`);
+							new Notice(`Configuring sync for ${folder}`);
 							window.open(
 								`${formData.edit_url}?secret=${formData.management_secret}`,
 								"_blank"
