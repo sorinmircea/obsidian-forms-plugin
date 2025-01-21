@@ -1,0 +1,128 @@
+import { FORMS_POST_ENDPOINT } from "../constants";
+import { Notice, requestUrl } from "obsidian";
+
+interface APIManagerCreateFormRes {
+	public_url: string;
+	mount_dir: string;
+	edit_url: string;
+	api_url: string;
+	management_secret:string;
+}
+
+interface Value {
+	label: string;
+	content: string;
+}
+
+interface ResponseItem {
+	response_id: number;
+	submitted_at: string;
+	submitted_by: string | null;
+	values: Value[];
+}
+
+export default class APIManager {
+	private plugin: any;
+	private data: Record<string, APIManagerCreateFormRes>;
+
+	constructor(plugin: any) {
+		this.plugin = plugin;
+	}
+
+	async createForm(
+		vault_name: string,
+		mount_dir: string
+	): Promise<APIManagerCreateFormRes | undefined> {
+		try {
+			const response = await fetch(FORMS_POST_ENDPOINT, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ vault_name, mount_dir }),
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				new Notice(
+					`Failed to create form: ${
+						errorData.error || response.statusText
+					}`
+				);
+				return;
+			}
+
+			const result = await response.json();
+			return result;
+		} catch (error) {
+			new Notice("Failed to create form. Check console for details.");
+			return;
+		}
+	}
+
+	public async fetchFormData(): Promise<void> {
+		// Load stored data which maps directory to the URL
+		this.data = await this.plugin.loadData();
+
+		// For each mount configuration
+		for (const key in this.data) {
+			const { mount_dir, api_url } = this.data[key];
+			// Fetch the data from the API
+			const responses = await this.fetchResponses(api_url);
+
+			// For each response item, create a note
+			for (const responseItem of responses) {
+				await this.createNoteFromResponse(mount_dir, responseItem);
+			}
+		}
+	}
+
+	private async fetchResponses(url: string): Promise<ResponseItem[]> {
+		const response = await requestUrl({ url });
+		if (!response.json || !Array.isArray(response.json)) {
+			return [];
+		}
+		return response.json as ResponseItem[];
+	}
+
+	private async createNoteFromResponse(
+		mountDir: string,
+		response: ResponseItem
+	): Promise<void> {
+		// Construct a note filename based on the response (e.g., response_id)
+		const fileNameBase = `response_${response.response_id}`;
+		const fileName = `${mountDir}/${fileNameBase}.md`;
+
+		// Map values into YAML frontmatter and body
+		const frontmatterEntries = response.values
+			.map((v) => `${v.label}: "${v.content}"`)
+			.join("\n");
+		const submittedAt = `submitted_at: "${response.submitted_at}"`;
+		const submittedBy = `submitted_by: ${
+			response.submitted_by !== null
+				? `"${response.submitted_by}"`
+				: "null"
+		}`;
+
+		// Prepare the note content
+		const noteContent = `---
+${submittedAt}
+${frontmatterEntries}
+---
+`;
+
+		// Ensure the directory exists
+		await this.ensureFolderExists(mountDir);
+
+		// Create or overwrite the note file
+		await this.plugin.app.vault.adapter.write(fileName, noteContent);
+	}
+
+	private async ensureFolderExists(folderPath: string) {
+		const adapter = this.plugin.app.vault.adapter;
+		const folderExists = await adapter.exists(folderPath);
+		if (!folderExists) {
+			await adapter.mkdir(folderPath);
+		}
+	}
+}
