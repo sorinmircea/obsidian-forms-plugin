@@ -6,7 +6,7 @@ interface APIManagerCreateFormRes {
 	mount_dir: string;
 	edit_url: string;
 	api_url: string;
-	management_secret:string;
+	management_secret: string;
 }
 
 interface Value {
@@ -64,25 +64,38 @@ export default class APIManager {
 		// Load stored data which maps directory to the URL
 		this.data = await this.plugin.loadData();
 
-		// For each mount configuration
 		for (const key in this.data) {
-			const { mount_dir, api_url } = this.data[key];
-			// Fetch the data from the API
-			const responses = await this.fetchResponses(api_url);
+			const { mount_dir, api_url, management_secret } = this.data[key];
+			const responses = await this.fetchResponses(
+				api_url,
+				management_secret
+			);
 
-			// For each response item, create a note
 			for (const responseItem of responses) {
 				await this.createNoteFromResponse(mount_dir, responseItem);
 			}
 		}
 	}
 
-	private async fetchResponses(url: string): Promise<ResponseItem[]> {
-		const response = await requestUrl({ url });
-		if (!response.json || !Array.isArray(response.json)) {
+	private async fetchResponses(
+		url: string,
+		managementSecret: string
+	): Promise<ResponseItem[]> {
+		try {
+			const response = await requestUrl({
+				url,
+				method: "GET",
+				headers: {
+					Authorization: `Bearer ${managementSecret}`,
+				},
+			});
+			if (!response.json || !Array.isArray(response.json)) {
+				return [];
+			}
+			return response.json as ResponseItem[];
+		} catch (error) {
 			return [];
 		}
-		return response.json as ResponseItem[];
 	}
 
 	private async createNoteFromResponse(
