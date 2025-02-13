@@ -42,12 +42,12 @@ export default class APIManager {
 				},
 				body: JSON.stringify({ vault_name, mount_dir }),
 			});
-
-			if (!response.ok) {
+			
+			if (response.status != 200) {
 				const errorData = await response.json();
 				new Notice(
 					`Failed to create form: ${
-						errorData.error || response.statusText
+						errorData.error || response.text
 					}`
 				);
 				return;
