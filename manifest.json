@@ -1,11 +1,11 @@
 {
-	"id": "formsidian",
-	"name": "Formsidian",
-	"version": "1.0.0",
+	"id": "forms",
+	"name": "Forms",
+	"version": "1.0.1",
 	"minAppVersion": "0.15.0",
-	"description": "Build and publish beautiful forms",
+	"description": "Publish beautiful forms and get responses straight to your vault.",
 	"author": "Sorin Mircea",
 	"authorUrl": "https://sorinmircea.com",
-	"fundingUrl": "https://formsidian.com",
+	"fundingUrl": "https://sorinmircea.com",
 	"isDesktopOnly": true
 }

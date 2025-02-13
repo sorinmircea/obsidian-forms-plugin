@@ -34,8 +34,9 @@ export default class APIManager {
 		mount_dir: string
 	): Promise<APIManagerCreateFormRes | undefined> {
 		try {
-			const response = await fetch(FORMS_POST_ENDPOINT, {
+			const response = await requestUrl({
 				method: "POST",
+				url: FORMS_POST_ENDPOINT,
 				headers: {
 					"Content-Type": "application/json",
 				},

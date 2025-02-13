@@ -89,7 +89,7 @@ export default class FormManagementModal extends Modal {
 			})
 			.addButton((button) => {
 				button
-					.setButtonText("Add Folder")
+					.setButtonText("Add folder")
 					.setCta()
 					.onClick(async () => {
 						if (!this.forms.has(this.currentFolder)) {
