@@ -1,10 +1,10 @@
-# Formsidian
+# Obsidian Forms Plugin
 
-Forms for obsidian
+Publish beautiful forms and get responses straight to your vault
 
 ## How does it work
 
-Link a folder from your Obsidian vault to [Formsidian.com](https://formsidian.com) to easily create, edit, and manage forms. Obsidian automatically syncs with Formsidian, so all your filled form entries stay up to date in your vault.
+Link a folder from your Obsidian vault and use the web interface to easily create, edit, and manage forms. Obsidian automatically syncs with Formsidian, so all your filled form entries stay up to date in your vault.
 
 
 ### 1. Form Creation
