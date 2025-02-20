@@ -71,7 +71,7 @@ export default class FormManagementModal extends Modal {
 		contentEl.empty(); // Clear the modal content to ensure updates are reflected
 
 		// Modal title
-		contentEl.createEl("h3", { text: "New Form" });
+		contentEl.createEl("h3", { text: "New form" });
 
 		// Add button to sync the currently selected folder
 		new Setting(contentEl)
