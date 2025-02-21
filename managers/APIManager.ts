@@ -42,8 +42,8 @@ export default class APIManager {
 				},
 				body: JSON.stringify({ vault_name, mount_dir }),
 			});
-			
-			if (response.status != 200) {
+
+			if (response.status < 200 || response.status >= 300) {
 				const errorData = await response.json();
 				new Notice(
 					`Failed to create form: ${
@@ -53,7 +53,7 @@ export default class APIManager {
 				return;
 			}
 
-			const result = await response.json();
+			const result = await response.json;
 			return result;
 		} catch (error) {
 			new Notice("Failed to create form. Check console for details.");
