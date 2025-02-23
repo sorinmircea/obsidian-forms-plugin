@@ -5,7 +5,7 @@ import {
 } from "obsidian";
 import APIManager from "managers/APIManager";
 
-export default class Formsidian extends Plugin {
+export default class Forms extends Plugin {
 	apiManager: APIManager;
 
 	async onload() {
@@ -18,16 +18,16 @@ export default class Formsidian extends Plugin {
 
 		// Add shortcut to force resync
 		this.addCommand({
-			id: "sync-formsidian",
+			id: "sync-forms",
 			name: "Sync forms",
 			callback: () => {
 				this.apiManager.fetchFormData().then(() => {
-					new Notice(`Formsidian successfully synced`);
+					new Notice(`Forms successfully synced`);
 				});
 			},
 		});
 
-		// Silently sync with formsidian server once per hour
+		// Silently sync with forms.ifnul.com server once per hour
 		this.registerInterval(
 			window.setInterval(() => {
 				this.apiManager.fetchFormData().then(() => {});

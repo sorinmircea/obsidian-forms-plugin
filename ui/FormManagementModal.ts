@@ -116,7 +116,7 @@ export default class FormManagementModal extends Modal {
 								);
 								this.saveForms();
 								new Notice(
-									`${this.currentFolder} linked to Formsidian`
+									`${this.currentFolder} marked as a form server`
 								);
 							} else {
 								new Notice(`Failed connecting to the server`);
@@ -158,7 +158,7 @@ export default class FormManagementModal extends Modal {
 						.setTooltip("Fetch filled forms")
 						.onClick(() => {
 							this.apiManager.fetchFormData().then(() => {
-								new Notice(`Formsidian successfully synced`);
+								new Notice(`Forms successfully synced`);
 							});
 						});
 				})
