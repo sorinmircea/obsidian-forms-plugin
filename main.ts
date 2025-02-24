@@ -1,8 +1,5 @@
 import FormManagementModal from "ui/FormManagementModal";
-import {
-	Notice,
-	Plugin,
-} from "obsidian";
+import { Notice, Plugin } from "obsidian";
 import APIManager from "managers/APIManager";
 
 export default class Forms extends Plugin {
@@ -16,7 +13,7 @@ export default class Forms extends Plugin {
 			new FormManagementModal(this.app, this).open();
 		});
 
-		// Add shortcut to force resync
+		// Add shortcut to trigger resync
 		this.addCommand({
 			id: "sync-forms",
 			name: "Sync forms",
@@ -24,6 +21,15 @@ export default class Forms extends Plugin {
 				this.apiManager.fetchFormData().then(() => {
 					new Notice(`Forms successfully synced`);
 				});
+			},
+		});
+
+		// Add shortcut to open the form dashboard
+		this.addCommand({
+			id: "forms-dashboard",
+			name: "Open forms dashboard",
+			callback: () => {
+				new FormManagementModal(this.app, this).open();
 			},
 		});
 

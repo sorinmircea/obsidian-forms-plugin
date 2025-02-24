@@ -76,7 +76,9 @@ export default class FormManagementModal extends Modal {
 		// Add button to sync the currently selected folder
 		new Setting(contentEl)
 			.setName("Folder path")
-			.setDesc("Root folder for the form.")
+			.setDesc(
+				"Mark folder where form entries are going to be synced to."
+			)
 			.addDropdown((dropdown) => {
 				this.allFolders.forEach((folder) => {
 					dropdown.addOption(folder, folder);
@@ -89,7 +91,7 @@ export default class FormManagementModal extends Modal {
 			})
 			.addButton((button) => {
 				button
-					.setButtonText("Add folder")
+					.setButtonText("Select folder")
 					.setCta()
 					.onClick(async () => {
 						if (!this.forms.has(this.currentFolder)) {
@@ -131,9 +133,14 @@ export default class FormManagementModal extends Modal {
 					});
 			});
 
-		// List all synced folders with configure and delete options
-		contentEl.createEl("br");
-		contentEl.createEl("h3", { text: "Forms" });
+		// Container for "Forms" title and description
+		const formsHeaderContainer = contentEl.createDiv();
+		formsHeaderContainer.createEl("h3", { text: "Forms" });
+		formsHeaderContainer.createEl("p", {
+			text: "'Configure' to design form fields and deploy online. Form entries are auto-sync hourly, or manually via refresh button / 'Sync forms' action.",
+			cls: "setting-item-description",
+		});
+
 		Array.from(this.forms.entries()).forEach(([folder, formData]) => {
 			const folderSetting = new Setting(contentEl).setName(folder);
 
