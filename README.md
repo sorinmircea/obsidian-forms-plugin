@@ -1,6 +1,6 @@
-# Forms plugin for Obsidian
+# Forms
 
-Publish beautiful forms and get responses straight to your vault
+Publish beautiful forms and get responses straight to your Obsidian vault
 
 ## How does it work
 
