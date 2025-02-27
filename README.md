@@ -1,4 +1,4 @@
-# Obsidian Forms Plugin
+# Forms plugin for Obsidian
 
 Publish beautiful forms and get responses straight to your vault
 
