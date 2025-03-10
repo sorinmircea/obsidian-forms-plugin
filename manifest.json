@@ -1,11 +1,11 @@
 {
 	"id": "forms",
 	"name": "Forms",
-	"version": "1.0.11",
+	"version": "1.0.12",
 	"minAppVersion": "0.15.0",
 	"description": "Publish beautiful forms and get responses straight to your vault.",
 	"author": "Sorin Mircea",
 	"authorUrl": "https://sorinmircea.com",
 	"fundingUrl": "https://sorinmircea.com",
-	"isDesktopOnly": true
+	"isDesktopOnly": false
 }
