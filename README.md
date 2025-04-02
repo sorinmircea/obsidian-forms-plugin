@@ -30,4 +30,4 @@ Link a folder from your Obsidian vault and use the web interface to easily creat
 
 
 ## Payment plan
-One free form can be published under the free plan, for additional forms a subscription of 4.99$/month is required.
+You can publish one form for free under the Free Plan. For additional forms, choose between $6 per year or a one-time $10 lifetime deal.

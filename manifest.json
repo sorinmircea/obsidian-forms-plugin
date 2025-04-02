@@ -1,7 +1,7 @@
 {
 	"id": "forms",
 	"name": "Forms",
-	"version": "1.0.12",
+	"version": "1.0.13",
 	"minAppVersion": "0.15.0",
 	"description": "Publish beautiful forms and get responses straight to your vault.",
 	"author": "Sorin Mircea",
