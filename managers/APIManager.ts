@@ -106,6 +106,12 @@ export default class APIManager {
 		const fileNameBase = `response_${response.response_id}`;
 		const fileName = `${mountDir}/${fileNameBase}.md`;
 
+		// If file exist just skip
+		const responseExists = await this.plugin.app.vault.adapter.exists(fileName);
+		if(responseExists) {
+			return;
+		}
+
 		// Map values into YAML frontmatter and body
 		const formEntries = response.values
 			.map((v) => `${v.label}: "${v.content}"`)
