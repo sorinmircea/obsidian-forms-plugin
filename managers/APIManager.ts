@@ -46,8 +46,7 @@ export default class APIManager {
 			if (response.status < 200 || response.status >= 300) {
 				const errorData = await response.json();
 				new Notice(
-					`Failed to create form: ${
-						errorData.error || response.text
+					`Failed to create form: ${errorData.error || response.text
 					}`
 				);
 				return;
@@ -108,15 +107,25 @@ export default class APIManager {
 		const fileName = `${mountDir}/${fileNameBase}.md`;
 
 		// Map values into YAML frontmatter and body
-		const frontmatterEntries = response.values
+		const formEntries = response.values
 			.map((v) => `${v.label}: "${v.content}"`)
 			.join("\n");
-		const submittedAt = `submitted_at: "${response.submitted_at}"`;
+
+		let submittedAt = new Date(response.submitted_at).toLocaleString(undefined, {
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+			timeZoneName: "short"
+		});
+		const submittedAtString = `submitted_at: "${submittedAt}"`;
 
 		// Prepare the note content
 		const noteContent = `---
-${submittedAt}
-${frontmatterEntries}
+${submittedAtString}
+${formEntries}
 ---
 `;
 
