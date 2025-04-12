@@ -6,11 +6,17 @@ Publish beautiful forms and get responses straight to your Obsidian vault
 
 Link a folder from your Obsidian vault and use the web interface to easily create, edit, and manage forms. Obsidian will sync automatically, so all your filled form entries stay up to date in your vault.
 
-
 ### 1. Form Creation
+- Create forms directly from Obsidian in two ways:
+  - Using the left ribbon icon
+  
+  ![Create form from ribbon](./public/1-form-creation-ribbon.gif)
+  
+  - Using the folder context menu (right-click)
+  
+  ![Create form from context menu](./public/1-form-creation-folder-context-menu.gif)
+  
 - Choose an Obsidian folder as the home directory for the form.
-
-![Form Creation](./public/1-form-creation.png)
 
 ### 2. Setting Up Questions
 - Link the form with your account on the website.

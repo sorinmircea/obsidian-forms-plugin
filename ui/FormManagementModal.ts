@@ -58,7 +58,7 @@ export default class FormManagementModal extends Modal {
 		new Setting(contentEl)
 			.setName("Folder path")
 			.setDesc(
-				"@@ Mark folder where form entries are going to be synced to."
+				"Mark folder where form entries are going to be synced to."
 			)
 			.addDropdown((dropdown) => {
 				this.allFolders.forEach((folder) => {

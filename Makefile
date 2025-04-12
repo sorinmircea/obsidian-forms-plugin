@@ -1,4 +1,4 @@
-VERSION := 1.0.16
+VERSION := 1.0.17
 
 tag:
 	git tag -a $(VERSION) -m "$(VERSION)"
