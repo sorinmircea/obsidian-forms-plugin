@@ -1,5 +1,6 @@
 import { FORMS_POST_ENDPOINT } from "../constants";
 import { Notice, requestUrl, Plugin } from "obsidian";
+import FormData from "../types/FormData";
 
 interface APIManagerCreateFormRes {
 	public_url: string;
@@ -23,10 +24,12 @@ interface ResponseItem {
 
 export default class APIManager {
 	private plugin: Plugin;
-	private data: Record<string, APIManagerCreateFormRes>;
+	private formResponses: Record<string, APIManagerCreateFormRes>;
+	public localForms: Map<string, FormData>;
 
 	constructor(plugin: Plugin) {
 		this.plugin = plugin;
+		this.localForms = new Map();
 	}
 
 	async createForm(
@@ -63,10 +66,10 @@ export default class APIManager {
 
 	public async fetchFormData(): Promise<void> {
 		// Load stored data which maps directory to the URL
-		this.data = await this.plugin.loadData();
+		this.formResponses = await this.plugin.loadData();
 
-		for (const key in this.data) {
-			const { mount_dir, api_url, management_secret } = this.data[key];
+		for (const key in this.formResponses) {
+			const { mount_dir, api_url, management_secret } = this.formResponses[key];
 			const responses = await this.fetchResponses(
 				api_url,
 				management_secret
@@ -133,5 +136,35 @@ ${frontmatterEntries}
 		if (!folderExists) {
 			await adapter.mkdir(folderPath);
 		}
+	}
+
+	public isFormFolder(folderPath: string): boolean {
+		return this.formResponses && this.formResponses[folderPath] !== undefined;
+	}
+
+	async loadForms(): Promise<Map<string, FormData>> {
+		const forms = new Map<string, FormData>();
+		const savedForms = (await this.plugin.loadData()) || {};
+		
+		for (const [key, value] of Object.entries(savedForms)) {
+			const formValue = value as FormData;
+			forms.set(
+				key,
+				new FormData(
+					formValue.mount_dir,
+					formValue.public_url,
+					formValue.edit_url,
+					formValue.api_url,
+					formValue.management_secret
+				)
+			);
+		}
+		
+		return forms;
+	}
+
+	async refreshForms(): Promise<Map<string, FormData>> {
+		this.localForms = await this.loadForms();
+		return this.localForms;
 	}
 }

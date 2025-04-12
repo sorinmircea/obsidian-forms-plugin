@@ -6,21 +6,19 @@ import APIManager from "managers/APIManager";
 export default class FormManagementModal extends Modal {
 	currentFolder: string;
 	allFolders: string[];
-	forms: Map<string, FormData>;
 	plugin: Plugin;
 
 	contentManager: ContentManager;
 	apiManager: APIManager;
 
-	constructor(app: App, plugin: Plugin) {
+	constructor(app: App, plugin: Plugin, apiManager: APIManager) {
 		super(app);
 		this.plugin = plugin;
 		this.contentManager = new ContentManager(app);
-		this.apiManager = new APIManager(plugin);
+		this.apiManager = apiManager;
 
 		const activeFile = this.app.workspace.getActiveFile();
 		this.allFolders = this.contentManager.getAllFolders();
-		this.forms = new Map();
 
 		if (activeFile) {
 			const filePath = activeFile.path;
@@ -33,26 +31,9 @@ export default class FormManagementModal extends Modal {
 		}
 	}
 
-	async loadForms() {
-		const savedForms = (await this.plugin.loadData()) || {};
-		for (const [key, value] of Object.entries(savedForms)) {
-			const formValue = value as FormData;
-			this.forms.set(
-				key,
-				new FormData(
-					formValue.mount_dir,
-					formValue.public_url,
-					formValue.edit_url,
-					formValue.api_url,
-					formValue.management_secret
-				)
-			);
-		}
-	}
-
 	async saveForms() {
 		const data: Record<string, FormData> = {};
-		this.forms.forEach((formData, key) => {
+		this.apiManager.localForms.forEach((formData, key) => {
 			data[key] = {
 				mount_dir: formData.mount_dir,
 				public_url: formData.public_url,
@@ -65,7 +46,7 @@ export default class FormManagementModal extends Modal {
 	}
 
 	async onOpen() {
-		await this.loadForms();
+		await this.apiManager.refreshForms();
 
 		const { contentEl } = this;
 		contentEl.empty(); // Clear the modal content to ensure updates are reflected
@@ -77,7 +58,7 @@ export default class FormManagementModal extends Modal {
 		new Setting(contentEl)
 			.setName("Folder path")
 			.setDesc(
-				"Mark folder where form entries are going to be synced to."
+				"@@ Mark folder where form entries are going to be synced to."
 			)
 			.addDropdown((dropdown) => {
 				this.allFolders.forEach((folder) => {
@@ -93,44 +74,7 @@ export default class FormManagementModal extends Modal {
 				button
 					.setButtonText("Select folder")
 					.setCta()
-					.onClick(async () => {
-						if (!this.forms.has(this.currentFolder)) {
-							new Notice(`Linking folder...`);
-
-							// Call Server
-							const serverResponse =
-								await this.apiManager.createForm(
-									this.app.vault.getName(),
-									this.currentFolder
-								);
-
-							// Save locally
-							if (serverResponse) {
-								this.forms.set(
-									this.currentFolder,
-									new FormData(
-										this.currentFolder,
-										serverResponse.public_url,
-										serverResponse.edit_url,
-										serverResponse.api_url,
-										serverResponse.management_secret
-									)
-								);
-								this.saveForms();
-								new Notice(
-									`${this.currentFolder} marked as a form server`
-								);
-							} else {
-								new Notice(`Failed connecting to the server`);
-							}
-
-							this.onOpen(); // Refresh to update the synced folders list
-						} else {
-							new Notice(
-								`${this.currentFolder} is already added`
-							);
-						}
-					});
+					.onClick(() => this.handleFolderSelection(this.currentFolder));
 			});
 
 		// Container for "Forms" title and description
@@ -141,7 +85,7 @@ export default class FormManagementModal extends Modal {
 			cls: "setting-item-description",
 		});
 
-		Array.from(this.forms.entries()).forEach(([folder, formData]) => {
+		Array.from(this.apiManager.localForms.entries()).forEach(([folder, formData]) => {
 			const folderSetting = new Setting(contentEl).setName(folder);
 
 			folderSetting
@@ -174,13 +118,53 @@ export default class FormManagementModal extends Modal {
 						.setIcon("cross")
 						.setWarning()
 						.onClick(() => {
-							this.forms.delete(folder);
+							this.apiManager.localForms.delete(folder);
 							this.saveForms();
 							new Notice(`${folder} unlinked`);
 							this.onOpen(); // Refresh the modal
 						});
 				});
 		});
+	}
+
+	async handleFolderSelection(folderPath: string) {
+		if (!this.apiManager.localForms.has(folderPath)) {
+			new Notice(`Linking folder...`);
+
+			// Call Server
+			const serverResponse =
+				await this.apiManager.createForm(
+					this.app.vault.getName(),
+					folderPath
+				);
+
+			// Save locally
+			if (serverResponse) {
+				this.apiManager.localForms.set(
+					folderPath,
+					new FormData(
+						folderPath,
+						serverResponse.public_url,
+						serverResponse.edit_url,
+						serverResponse.api_url,
+						serverResponse.management_secret
+					)
+				);
+				this.saveForms();
+				await this.apiManager.refreshForms();
+				new Notice(
+					`${folderPath} marked as a form server`
+				);
+			} else {
+				new Notice(`Failed connecting to the server`);
+			}
+
+			this.onOpen(); // Refresh to update the synced folders list
+		} else {
+			new Notice(
+				`${folderPath} is already added`
+			);
+		}
 	}
 
 	onClose() {
