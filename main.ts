@@ -44,6 +44,7 @@ export default class Forms extends Plugin {
 						menu.addItem((item) => {
 							item
 								.setTitle("Create form in folder")
+								.setIcon("book-copy")
 								.onClick(() => {
 									const modal = new FormManagementModal(this.app, this, this.apiManager);
 									modal.currentFolder = file.path;
@@ -57,6 +58,7 @@ export default class Forms extends Plugin {
 						menu.addItem((item) => {
 							item
 								.setTitle("Sync form responses")
+								.setIcon("book-copy")
 								.onClick(() => {
 									this.apiManager.fetchFormData().then(() => {
 										new Notice(`Form successfully synced`);
